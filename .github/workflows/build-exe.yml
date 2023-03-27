@@ -106,7 +106,11 @@ jobs:
           prerelease: false
       - name: Compress Package
         run: |
-          tar czvf clipboard-release.tar.gz --exclude=.git --exclude=node_modules --exclude=*.tar.gz .
+          tar czvf clipboard-release.tar.gz \
+            dist \
+            go-clipboard/binaries \
+            go-clipboard/scripts \
+            README.md
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
