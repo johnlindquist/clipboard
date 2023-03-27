@@ -94,14 +94,20 @@ jobs:
         with:
           name: linux-artifact
           path: go-clipboard/binaries
+
+      - name: Get version from package.json
+        id: package_version
+        run: |
+          echo "::set-output name=version::$(node -p "require('./package.json').version")"
+
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: v${{ steps.package_version.outputs.version }}
+          release_name: Release v${{ steps.package_version.outputs.version }}
           draft: false
           prerelease: false
       - name: Compress Package
