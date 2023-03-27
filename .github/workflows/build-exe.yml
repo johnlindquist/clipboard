@@ -46,7 +46,7 @@ jobs:
             go-clipboard/binaries/go-clipboard-win32-x64
 
   build_linux_executable:
-    runs-on: linux-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
