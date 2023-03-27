@@ -1,6 +1,6 @@
 name: Build Executable
 
-on: 
+on:
   push:
     branches: [main, ci]
 
@@ -64,3 +64,55 @@ jobs:
           retention-days: 5
           path: |
             go-clipboard/binaries/go-clipboard-linux-x64
+
+  publish_release:
+    needs: [build_mac_executable, build_windows_executable, build_linux_executable]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+      - name: Install dependencies and run build
+        run: |
+          npm ci
+          npm run build
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: mac-artifact
+          path: go-clipboard/binaries
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-artifact
+          path: go-clipboard/binaries
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-artifact
+          path: go-clipboard/binaries
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Compress Package
+        run: |
+          tar czvf clipboard-release.tar.gz --exclude=.git --exclude=node_modules --exclude=*.tar.gz .
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: clipboard-release.tar.gz
+          asset_name: clipboard-release.tar.gz
+          asset_content_type: application/gzip

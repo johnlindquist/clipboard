@@ -4,11 +4,11 @@
 > Designed for NodeJS, not for web.
 > Provides API to read and write text/image from/to clipboard.
 
-npm package: https://www.npmjs.com/package/@crosscopy/clipboard
+Forked from: https://www.npmjs.com/package/@crosscopy/clipboard
 
 ## Installation
 
-`npm i @crosscopy/clipboard`
+`npm i @johnlindquist/clipboard`
 
 ## Usage
 
