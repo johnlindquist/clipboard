@@ -26,7 +26,7 @@ jobs:
             go-clipboard/binaries/go-clipboard-darwin-x64
 
   build_mac_executable_arm64:
-    runs-on: macos-latest
+    runs-on: [macos-latest, arm64]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
