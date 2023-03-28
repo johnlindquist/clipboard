@@ -37,12 +37,13 @@ jobs:
       - name: Install osxcross
         run: |
           brew install FiloSottile/musl-cross/musl-cross
-          echo "/usr/local/Cellar/musl-cross/0.9.9_1" >> $GITHUB_PATH
+          echo "/usr/local/opt/musl-cross/bin" >> $GITHUB_PATH
       - name: Install macOS SDK
         run: |
-          curl -OL https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.15.sdk.tar.xz
-          tar -xf MacOSX10.15.sdk.tar.xz -C $(brew --prefix)/Cellar/osxcross/target
-          rm MacOSX10.15.sdk.tar.xz
+          curl -OL https://github.com/phracker/MacOSX-SDKs/releases/download/11.3/MacOSX11.3.sdk.tar.xz
+          sudo mkdir -p $(brew --prefix)/Cellar/osxcross/target/SDK
+          sudo tar -xf MacOSX11.3.sdk.tar.xz -C $(brew --prefix)/Cellar/osxcross/target/SDK
+          rm MacOSX11.3.sdk.tar.xz
       - name: go build executable
         run: |
           export GOOS=darwin
