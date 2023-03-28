@@ -5,7 +5,7 @@ on:
     branches: [main, ci]
 
 jobs:
-  build_mac_executable:
+  build_mac_executable_x64:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
@@ -16,14 +16,34 @@ jobs:
           go-version: 1.19
       - name: go build executable
         run: |
-          go build -v -o go-clipboard/binaries/go-clipboard-darwin-x64 ./go-clipboard/main.go
+          GOOS=darwin GOARCH=amd64 go build -v -o go-clipboard/binaries/go-clipboard-darwin-x64 ./go-clipboard/main.go
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: mac-artifact
+          name: mac-artifact-x64
           retention-days: 5
           path: |
             go-clipboard/binaries/go-clipboard-darwin-x64
+
+  build_mac_executable_arm64:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+      - name: go build executable
+        run: |
+          GOOS=darwin GOARCH=arm64 go build -v -o go-clipboard/binaries/go-clipboard-darwin-arm64 ./go-clipboard/main.go
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: mac-artifact-arm64
+          retention-days: 5
+          path: |
+            go-clipboard/binaries/go-clipboard-darwin-arm64
 
   build_windows_executable:
     runs-on: windows-latest
