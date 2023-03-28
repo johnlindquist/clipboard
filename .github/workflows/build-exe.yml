@@ -37,15 +37,13 @@ jobs:
       - name: Set up Xcode
         run: |
           sudo xcode-select --switch /Applications/Xcode.app
-      - name: Install Command Line Tools
-        run: |
-          sudo xcode-select --install
       - name: go build executable
         run: |
           export GOOS=darwin
           export GOARCH=arm64
           export CC=$(xcrun --sdk macosx --find clang)
           export CXX=$(xcrun --sdk macosx --find clang++)
+          export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
           export CGO_ENABLED=1
           go build -v -o go-clipboard/binaries/go-clipboard-darwin-arm64 ./go-clipboard/main.go
       - name: Archive production artifacts
