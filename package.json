@@ -41,6 +41,11 @@
     "tsup": "^6.3.0",
     "typescript": "^4.8.4"
   },
+  "bin": {
+    "go-clipboard-darwin-x64": "./go-clipboard/binaries/go-clipboard-darwin-x64",
+    "go-clipboard-darwin-arm64": "./go-clipboard/binaries/go-clipboard-darwin-arm64",
+    "go-clipboard-linux-x64": "./go-clipboard/binaries/go-clipboard-linux-x64"
+  },
   "files": [
     "dist",
     "go-clipboard/binaries",

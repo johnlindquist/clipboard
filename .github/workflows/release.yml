@@ -137,7 +137,10 @@ jobs:
 
       - name: Make all binaries executable
         run: |
-          chmod +x go-clipboard/binaries/*
+          chmod +x go-clipboard/binaries/go-clipboard-darwin-x64
+          chmod +x go-clipboard/binaries/go-clipboard-darwin-arm64
+          chmod +x go-clipboard/binaries/go-clipboard-win32-x64
+          chmod +x go-clipboard/binaries/go-clipboard-linux-x64
 
       - name: Get version from package.json
         id: package_version
