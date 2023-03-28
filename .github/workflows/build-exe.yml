@@ -37,7 +37,7 @@ jobs:
       - name: Install osxcross
         run: |
           brew install FiloSottile/musl-cross/musl-cross
-          echo "/usr/local/opt/musl-cross/bin" >> $GITHUB_PATH
+          echo "/usr/local/Cellar/musl-cross/0.9.9_1" >> $GITHUB_PATH
       - name: Install macOS SDK
         run: |
           curl -OL https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.15.sdk.tar.xz
