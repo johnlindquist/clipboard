@@ -139,6 +139,10 @@ jobs:
           name: linux-artifact
           path: go-clipboard/binaries
 
+      - name: Semantic Release
+        run: |
+          npx semantic-release
+
       - name: Get version from package.json
         id: package_version
         run: |
@@ -166,9 +170,8 @@ jobs:
           asset_name: "johnlindquist-clipboard-${{ steps.package_version.outputs.version }}.tgz"
           asset_content_type: application/gzip
 
-      - name: Semantic Release
+      - name: Publish to NPM
         run: |
-          npx semantic-release
           npm publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
