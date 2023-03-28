@@ -102,7 +102,13 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
-          name: mac-artifact
+          name: mac-artifact-x64
+          path: go-clipboard/binaries
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: mac-artifact-arm64
           path: go-clipboard/binaries
       - name: Download artifacts
         uses: actions/download-artifact@v3
