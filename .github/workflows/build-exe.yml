@@ -26,19 +26,33 @@ jobs:
             go-clipboard/binaries/go-clipboard-darwin-x64
 
   build_mac_executable_arm64:
-    runs-on: [macos-latest, arm64]
+    runs-on: macos-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v2
         with:
           go-version: 1.19
+      - name: Install osxcross
+        run: |
+          brew install FiloSottile/musl-cross/musl-cross
+          echo "/usr/local/opt/musl-cross/bin" >> $GITHUB_PATH
+      - name: Install macOS SDK
+        run: |
+          curl -OL https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.15.sdk.tar.xz
+          tar -xf MacOSX10.15.sdk.tar.xz -C $(brew --prefix)/Cellar/osxcross/target
+          rm MacOSX10.15.sdk.tar.xz
       - name: go build executable
         run: |
-          GOOS=darwin GOARCH=arm64 go build -v -o go-clipboard/binaries/go-clipboard-darwin-arm64 ./go-clipboard/main.go
+          export GOOS=darwin
+          export GOARCH=arm64
+          export CC=aarch64-apple-darwin20.2.0-clang
+          export CXX=aarch64-apple-darwin20.2.0-clang++
+          export CGO_ENABLED=1
+          go build -v -o go-clipboard/binaries/go-clipboard-darwin-arm64 ./go-clipboard/main.go
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: mac-artifact-arm64
           retention-days: 5

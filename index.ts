@@ -157,7 +157,6 @@ export class Clipboard {
        */
       con.on("close", () => {
         const strData = data.toString()
-        console.log({ strData })
         const subStr = strData.substring(0, 14)
         if (subStr.includes(`${WatchEvent.TEXT_CHANGED}:`)) {
           const text = Buffer.from(strData.substring(13), "base64").toString()
