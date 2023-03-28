@@ -86,7 +86,7 @@ jobs:
             go-clipboard/binaries/go-clipboard-linux-x64
 
   publish_release:
-    needs: [build_mac_executable, build_windows_executable, build_linux_executable]
+    needs: [build_windows_executable, build_linux_executable, build_mac_executable_x64, build_mac_executable_arm64]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
