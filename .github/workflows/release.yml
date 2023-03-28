@@ -17,9 +17,6 @@ jobs:
       - name: go build executable
         run: |
           GOOS=darwin GOARCH=amd64 go build -v -o go-clipboard/binaries/go-clipboard-darwin-x64 ./go-clipboard/main.go
-      - name: Make executable
-        run: |
-          chmod +x go-clipboard/binaries/go-clipboard-darwin-x64
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -49,9 +46,7 @@ jobs:
           export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
           export CGO_ENABLED=1
           go build -v -o go-clipboard/binaries/go-clipboard-darwin-arm64 ./go-clipboard/main.go
-      - name: Make executable
-        run: |
-          chmod +x go-clipboard/binaries/go-clipboard-darwin-arm64
+
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -92,9 +87,7 @@ jobs:
       - name: go build executable
         run: |
           go build -v -o go-clipboard/binaries/go-clipboard-linux-x64 ./go-clipboard/main.go
-      - name: Make executable
-        run: |
-          chmod +x go-clipboard/binaries/go-clipboard-linux-x64
+
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -117,6 +110,7 @@ jobs:
 
       - name: Install dependencies and run build
         run: |
+          npx semantic-release
           npm ci
           npm run build
       - name: Download artifacts
@@ -141,9 +135,9 @@ jobs:
           name: linux-artifact
           path: go-clipboard/binaries
 
-      - name: Semantic Release
+      - name: Make all binaries executable
         run: |
-          npx semantic-release
+          chmod +x go-clipboard/binaries/*
 
       - name: Get version from package.json
         id: package_version
