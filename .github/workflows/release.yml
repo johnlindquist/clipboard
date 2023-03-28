@@ -110,8 +110,8 @@ jobs:
 
       - name: Install dependencies and run build
         run: |
-          npx semantic-release
           npm ci
+          npx semantic-release
           npm run build
       - name: Download artifacts
         uses: actions/download-artifact@v3
