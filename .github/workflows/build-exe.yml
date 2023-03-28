@@ -34,22 +34,15 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.19
-      - name: Install osxcross
+      - name: Install Xcode
         run: |
-          brew install --HEAD FiloSottile/musl-cross/osxcross
-          echo "/usr/local/opt/osxcross/bin" >> $GITHUB_PATH
-      - name: Install macOS SDK
-        run: |
-          curl -OL https://github.com/phracker/MacOSX-SDKs/releases/download/11.3/MacOSX11.3.sdk.tar.xz
-          sudo mkdir -p $(brew --prefix)/Cellar/osxcross/target/SDK
-          sudo tar -xf MacOSX11.3.sdk.tar.xz -C $(brew --prefix)/Cellar/osxcross/target/SDK
-          rm MacOSX11.3.sdk.tar.xz
+          sudo xcode-select -s /Applications/Xcode_13.2.1.app/Contents/Developer
       - name: go build executable
         run: |
           export GOOS=darwin
           export GOARCH=arm64
-          export CC=o64-clang
-          export CXX=o64-clang++
+          export CC=$(xcode-select -p)/usr/bin/clang
+          export CXX=$(xcode-select -p)/usr/bin/clang++
           export CGO_ENABLED=1
           go build -v -o go-clipboard/binaries/go-clipboard-darwin-arm64 ./go-clipboard/main.go
       - name: Archive production artifacts
