@@ -13,7 +13,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.20
+          go-version: 1.19
       - name: go build executable
         run: |
           GOOS=darwin GOARCH=amd64 go build -v -o go-clipboard/binaries/go-clipboard-darwin-x64 ./go-clipboard/main.go
@@ -36,7 +36,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.20
+          go-version: 1.19
       - name: Set up Xcode
         run: |
           sudo xcode-select --switch /Applications/Xcode.app
@@ -68,7 +68,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.20
+          go-version: 1.19
       - name: go build executable
         run: |
           go build -v -o go-clipboard/binaries/go-clipboard-win32-x64 ./go-clipboard/main.go
@@ -88,7 +88,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.20
+          go-version: 1.19
       - name: go build executable
         run: |
           go build -v -o go-clipboard/binaries/go-clipboard-linux-x64 ./go-clipboard/main.go
