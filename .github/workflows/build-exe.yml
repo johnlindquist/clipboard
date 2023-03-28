@@ -37,6 +37,9 @@ jobs:
       - name: Set up Xcode
         run: |
           sudo xcode-select --switch /Applications/Xcode.app
+      - name: Install Command Line Tools
+        run: |
+          sudo xcode-select --install
       - name: go build executable
         run: |
           export GOOS=darwin
