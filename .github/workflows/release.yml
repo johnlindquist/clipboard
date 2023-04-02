@@ -66,14 +66,14 @@ jobs:
           go-version: 1.19
       - name: go build executable
         run: |
-          go build -v -o go-clipboard/binaries/go-clipboard-win32-x64 ./go-clipboard/main.go
+          go build -v -o go-clipboard/binaries/go-clipboard-win32-x64.exe ./go-clipboard/main.go
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: windows-artifact
           retention-days: 5
           path: |
-            go-clipboard/binaries/go-clipboard-win32-x64
+            go-clipboard/binaries/go-clipboard-win32-x64.exe
 
   build_linux_executable:
     runs-on: ubuntu-latest
@@ -139,7 +139,7 @@ jobs:
         run: |
           chmod +x go-clipboard/binaries/go-clipboard-darwin-x64
           chmod +x go-clipboard/binaries/go-clipboard-darwin-arm64
-          chmod +x go-clipboard/binaries/go-clipboard-win32-x64
+          chmod +x go-clipboard/binaries/go-clipboard-win32-x64.exe
           chmod +x go-clipboard/binaries/go-clipboard-linux-x64
 
       - name: Get version from package.json
