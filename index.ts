@@ -115,11 +115,19 @@ export class Clipboard {
   }
 
   readImage(): Promise<Buffer> {
-    return Promise.resolve(this.readImageSync())
+    try {
+      return Promise.resolve(this.readImageSync())
+    } catch (error) {
+      return Promise.resolve(Buffer.from(""))
+    }
   }
 
   readImageBase64(): Promise<string> {
-    return Promise.resolve(this.readImageBase64Sync())
+    try {
+      return Promise.resolve(this.readImageBase64Sync())
+    } catch (error) {
+      return Promise.resolve("")
+    }
   }
 
   readImageSync(): Buffer {
@@ -134,15 +142,23 @@ export class Clipboard {
     //   const buf = execFileSync('powershell', [scriptPath])
     //   return Buffer.from(buf.toString(), 'base64')
     // }
-    const buf = execFileSync(this.goClipboardPath, [ClipboardOperation.READ_IMAGE])
-    const stdoutStr = buf.toString()
-    const imgBuf = Buffer.from(stdoutStr, "base64")
-    // fs.writeFileSync("test.png", imgBuf); // for debugging only
-    return imgBuf
+    try {
+      const buf = execFileSync(this.goClipboardPath, [ClipboardOperation.READ_IMAGE])
+      const stdoutStr = buf.toString()
+      const imgBuf = Buffer.from(stdoutStr, "base64")
+      // fs.writeFileSync("test.png", imgBuf); // for debugging only
+      return imgBuf
+    } catch (error) {
+      return Buffer.from("")
+    }
   }
 
   readImageBase64Sync(): string {
-    return this.readImageSync().toString("base64")
+    try {
+      return this.readImageSync().toString("base64")
+    } catch (error) {
+      return ""
+    }
   }
 
   listen() {
