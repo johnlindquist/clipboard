@@ -43,14 +43,22 @@ export class Clipboard {
   }
 
   readText(): Promise<string> {
-    return execFileAsync(this.goClipboardPath, [ClipboardOperation.READ_TEXT]).then(result => {
-      return base64StringToUTF8(result.stdout)
-    })
+    try {
+      return execFileAsync(this.goClipboardPath, [ClipboardOperation.READ_TEXT]).then(result => {
+        return base64StringToUTF8(result.stdout)
+      })
+    } catch (error) {
+      return Promise.resolve("")
+    }
   }
 
   readTextSync(): string {
-    const buf = execFileSync(this.goClipboardPath, [ClipboardOperation.READ_TEXT])
-    return base64BufToUTF8(buf)
+    try {
+      const buf = execFileSync(this.goClipboardPath, [ClipboardOperation.READ_TEXT])
+      return base64BufToUTF8(buf)
+    } catch (error) {
+      return ""
+    }
   }
 
   writeText(content: string): Promise<void> {
