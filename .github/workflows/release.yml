@@ -120,7 +120,7 @@ jobs:
               return $null
           }
           $signtoolPath = Get-SignToolPath
-          "$signtoolPath" sign /f "./cert.pfx" /p "${{ env.CERT_PASSWORD }}" /tr "http://timestamp.digicert.com" /td sha256 /fd sha256 /a "go-clipboard/binaries/go-clipboard-win32-x64.exe"
+          & "$signtoolPath" sign /f "./cert.pfx" /p "${{ env.CERT_PASSWORD }}" /tr "http://timestamp.digicert.com" /td sha256 /fd sha256 /a "go-clipboard/binaries/go-clipboard-win32-x64.exe"
 
       - name: Reupload signed executable
         uses: actions/upload-artifact@v2
