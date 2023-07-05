@@ -89,6 +89,10 @@ jobs:
         with:
           name: windows-artifact
           path: go-clipboard/binaries
+
+      - name: Install Windows 10 SDK
+        run: choco install windows-sdk-10-version-2004-all --no-progress
+
       - name: Generate self-signed certificate
         run: |
           $cert = New-SelfSignedCertificate -DnsName "www.scriptkit.com" -CertStoreLocation "cert:\CurrentUser\My"
@@ -124,7 +128,7 @@ jobs:
             go-clipboard/binaries/go-clipboard-linux-x64
 
   publish_release:
-    needs: [build_windows_executable, build_linux_executable, build_mac_executable_x64, build_mac_executable_arm64]
+    needs: [sign_windows_executable, build_linux_executable, build_mac_executable_x64, build_mac_executable_arm64]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
