@@ -13,7 +13,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.19
+          go-version: "stable"
       - name: go build executable
         run: |
           GOOS=darwin GOARCH=amd64 go build -v -o go-clipboard/binaries/go-clipboard-darwin-x64 ./go-clipboard/main.go
@@ -29,11 +29,11 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
         with:
-          go-version: 1.19
+          go-version: "stable"
       - name: Set up Xcode
         run: |
           sudo xcode-select --switch /Applications/Xcode.app
@@ -63,7 +63,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.19
+          go-version: "stable"
       - name: go build executable
         run: |
           go build -v -o go-clipboard/binaries/go-clipboard-win32-x64.exe ./go-clipboard/main.go
@@ -74,59 +74,6 @@ jobs:
           retention-days: 5
           path: |
             go-clipboard/binaries/go-clipboard-win32-x64.exe
-            # TODO: Sign the executable
-
-  sign_windows_executable:
-    needs: build_windows_executable
-    runs-on: windows-latest
-    env:
-      CERT_PASSWORD: ${{ secrets.CERT_PASSWORD }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Download windows artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: windows-artifact
-          path: go-clipboard/binaries
-
-      - name: Install Windows 10 SDK
-        run: choco install windows-sdk-10
-
-      - name: Generate self-signed certificate
-        run: |
-          $cert = New-SelfSignedCertificate -DnsName "www.scriptkit.com" -CertStoreLocation "cert:\CurrentUser\My"
-          Export-PfxCertificate -cert "cert:\CurrentUser\My\$($cert.Thumbprint)" -FilePath "./cert.pfx" -Password (ConvertTo-SecureString -String "${{ env.CERT_PASSWORD }}" -Force -AsPlainText)
-
-      - name: Sign the executable
-        shell: pwsh
-        run: |
-          function Get-SignToolPath {
-              $progFile = (${env:ProgramFiles(x86)}, ${env:ProgramFiles} -ne $null)[0]
-              $signToolDir = Join-Path -Path "$progFile" -ChildPath "Windows Kits\10\bin\"
-              [array]$signToolExes = (
-                  Get-ChildItem -Path "$signToolDir" -Filter "signtool.exe" -Recurse -ErrorAction SilentlyContinue -Force | % {
-                      if ($_.FullName -ilike '*x64*') {
-                          return $_.FullName;
-                      }
-                  }
-              )
-              if ($signToolExes -eq $null -or [string]::IsNullOrEmpty($signToolExes[0])) {
-                  return $null
-              }
-              if (Test-Path $signToolExes[0]) {
-                  return $signToolExes[0]
-              }
-              return $null
-          }
-          $signtoolPath = Get-SignToolPath
-          & "$signtoolPath" sign /f "./cert.pfx" /p "${{ env.CERT_PASSWORD }}" /tr "http://timestamp.digicert.com" /td sha256 /fd sha256 /a "go-clipboard/binaries/go-clipboard-win32-x64.exe"
-
-      - name: Reupload signed executable
-        uses: actions/upload-artifact@v2
-        with:
-          name: windows-artifact-signed
-          path: go-clipboard/binaries/go-clipboard-win32-x64.exe
 
   build_linux_executable:
     runs-on: ubuntu-latest
@@ -136,7 +83,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.19
+          go-version: "stable"
       - name: go build executable
         run: |
           go build -v -o go-clipboard/binaries/go-clipboard-linux-x64 ./go-clipboard/main.go
@@ -150,7 +97,7 @@ jobs:
             go-clipboard/binaries/go-clipboard-linux-x64
 
   publish_release:
-    needs: [sign_windows_executable, build_linux_executable, build_mac_executable_x64, build_mac_executable_arm64]
+    needs: [build_windows_executable, build_linux_executable, build_mac_executable_x64, build_mac_executable_arm64]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
