@@ -99,9 +99,28 @@ jobs:
           Export-PfxCertificate -cert "cert:\CurrentUser\My\$($cert.Thumbprint)" -FilePath "./cert.pfx" -Password (ConvertTo-SecureString -String "${{ env.CERT_PASSWORD }}" -Force -AsPlainText)
 
       - name: Sign the executable
-        shell: cmd
+        shell: pwsh
         run: |
-          "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" /f "./cert.pfx" /p "${{ env.CERT_PASSWORD }}" /tr "http://timestamp.digicert.com" /td sha256 /fd sha256 /a "go-clipboard/binaries/go-clipboard-win32-x64.exe"
+          function Get-SignToolPath {
+              $progFile = (${env:ProgramFiles(x86)}, ${env:ProgramFiles} -ne $null)[0]
+              $signToolDir = Join-Path -Path "$progFile" -ChildPath "Windows Kits\10\bin\"
+              [array]$signToolExes = (
+                  Get-ChildItem -Path "$signToolDir" -Filter "signtool.exe" -Recurse -ErrorAction SilentlyContinue -Force | % {
+                      if ($_.FullName -ilike '*x64*') {
+                          return $_.FullName;
+                      }
+                  }
+              )
+              if ($signToolExes -eq $null -or [string]::IsNullOrEmpty($signToolExes[0])) {
+                  return $null
+              }
+              if (Test-Path $signToolExes[0]) {
+                  return $signToolExes[0]
+              }
+              return $null
+          }
+          $signtoolPath = Get-SignToolPath
+          "$signtoolPath" sign /f "./cert.pfx" /p "${{ env.CERT_PASSWORD }}" /tr "http://timestamp.digicert.com" /td sha256 /fd sha256 /a "go-clipboard/binaries/go-clipboard-win32-x64.exe"
 
       - name: Reupload signed executable
         uses: actions/upload-artifact@v2
