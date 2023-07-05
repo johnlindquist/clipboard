@@ -99,15 +99,9 @@ jobs:
           Export-PfxCertificate -cert "cert:\CurrentUser\My\$($cert.Thumbprint)" -FilePath "./cert.pfx" -Password (ConvertTo-SecureString -String "${{ env.CERT_PASSWORD }}" -Force -AsPlainText)
 
       - name: Sign the executable
+        shell: cmd
         run: |
-          & {
-            "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" /f "./cert.pfx" `
-            /p "${{ env.CERT_PASSWORD }}" `
-            /tr "http://timestamp.digicert.com" `
-            /td sha256 `
-            /fd sha256 `
-            /a "go-clipboard/binaries/go-clipboard-win32-x64.exe"
-          }
+          "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" /f "./cert.pfx" /p "${{ env.CERT_PASSWORD }}" /tr "http://timestamp.digicert.com" /td sha256 /fd sha256 /a "go-clipboard/binaries/go-clipboard-win32-x64.exe"
 
       - name: Reupload signed executable
         uses: actions/upload-artifact@v2
